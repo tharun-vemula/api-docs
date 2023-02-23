@@ -406,6 +406,27 @@ paths:
                   $ref: '#/components/schemas/Permit'
                 xml:
                   name: user
+  /populate/allow:
+    get:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: get the student status - Internal API
+      description: Internal API to check the status of student. Returns the students data.This API is consumed by the Student Component. It requires Student JWT.
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type : object
+                properties:
+                  status:
+                    type: boolean
+                    example : true
+                xml:
+                  name: user
   /populate/student/all:
     post:
       tags:
