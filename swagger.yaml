@@ -14,35 +14,107 @@ tags:
     description: Everything about User
   - name: System
     description: Everything about System
-
 paths:
   /populate/create:
     post:
       tags:
         - Permit
+      security:
+        - bearerAuth: []
       summary: Creates a new outpass
-      description: Creates a new outpass
+      description: This API  creates a new outpass. This API is consumed by the student component. It requires Student JWT.
       requestBody:
         description: creates a new pass
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Permit'
-
+              type: object
+              required:
+                - id
+                - name
+                - phoneNumber
+                - outTime
+                - inTime
+                - inVerified
+                - outVerified
+                - purpose
+              properties:
+                id:
+                  type: string
+                  example: 2020bcs0066
+                name:
+                  type: string
+                  example: Tharun Vemula
+                phoneNumber:
+                  type: string
+                  example: '6301930763'
+                outTime:
+                  type: string
+                  example: '2023-02-11T18:30:00.000Z'
+                inTime:
+                  type: string
+                  example: '2023-02-11T18:30:00.000Z'
+                inVerified:
+                  type: boolean
+                  example: false
+                outVerified:
+                  type: boolean
+                  example: false
+                purpose:
+                  type: string
+                  example: Pala
+                inApprovedBy:
+                  type: string
+                  example: Security 1
+                outApprovedBy:
+                  type: string
+                  example: Security 1
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permit'
-
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 2020bcs0066
+                  name:
+                    type: string
+                    example: Tharun Vemula
+                  phoneNumber:
+                    type: string
+                    example: '6301930763'
+                  outTime:
+                    type: string
+                    example: '2023-02-11T18:30:00.000Z'
+                  inTime:
+                    type: string
+                    example: '2023-02-11T18:30:00.000Z'
+                  inVerified:
+                    type: boolean
+                    example: false
+                  outVerified:
+                    type: boolean
+                    example: false
+                  purpose:
+                    type: string
+                    example: Pala
+                  inApprovedBy:
+                    type: string
+                    example: Security 1
+                  outApprovedBy:
+                    type: string
+                    example: Security 1
   /populate/verify:
     post:
       tags:
         - Permit
+      security:
+        - bearerAuth: []
       summary: Verifies Outpass at the Security
-      description: In Verification and Out Verification
+      description: In Verification and Out Verification API. This API is consumed by the Security Component. It requries Security JWT
       requestBody:
         description: verifies a new pass
         content:
@@ -52,35 +124,66 @@ paths:
               properties:
                 id:
                   type: string
-                  example: '2020bcs0066'
+                  example: 2020bcs0066
                 type:
                   type: number
                   example: 0
                 inApprovedBy:
                   type: string
-                  example: 'Security 1'
+                  example: Security 1
                 outApprovedBy:
                   type: string
-                  example: 'Security 1'
-
+                  example: Security 1
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permit'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 2020bcs0066
+                  name:
+                    type: string
+                    example: Tharun Vemula
+                  phoneNumber:
+                    type: string
+                    example: '6301930763'
+                  outTime:
+                    type: string
+                    example: '2023-02-11T18:30:00.000Z'
+                  inTime:
+                    type: string
+                    example: '2023-02-11T18:30:00.000Z'
+                  inVerified:
+                    type: boolean
+                    example: false
+                  outVerified:
+                    type: boolean
+                    example: false
+                  purpose:
+                    type: string
+                    example: Pala
+                  inApprovedBy:
+                    type: string
+                    example: Security 1
+                  outApprovedBy:
+                    type: string
+                    example: Security 1
         '400':
           description: Invalid status value
-
   /populate/remark:
     post:
       tags:
         - Permit
+      security:
+        - bearerAuth: []
       summary: Sets remark
       description: Increments Remarks score by 1.
       requestBody:
-        description: Increments Remarks score by 1.
+        description: Increments Remarks score by 1 of a student.
         content:
           application/json:
             schema:
@@ -88,23 +191,55 @@ paths:
               properties:
                 id:
                   type: string
-                  example: '2020bcs0066'
+                  example: 2020bcs0066
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permit'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 2020bcs0066
+                  name:
+                    type: string
+                    example: Tharun Vemula
+                  phoneNumber:
+                    type: string
+                    example: '6301930763'
+                  outTime:
+                    type: string
+                    example: '2023-02-11T18:30:00.000Z'
+                  inTime:
+                    type: string
+                    example: '2023-02-11T18:30:00.000Z'
+                  inVerified:
+                    type: boolean
+                    example: false
+                  outVerified:
+                    type: boolean
+                    example: false
+                  purpose:
+                    type: string
+                    example: Pala
+                  inApprovedBy:
+                    type: string
+                    example: Security 1
+                  outApprovedBy:
+                    type: string
+                    example: Security 1
         '400':
           description: Invalid tag value
-
   /populate/outgoing:
     post:
       tags:
         - Permit
+      security:
+        - bearerAuth: []
       summary: Fectches Students from - to date
-      description: Returns an array of Students going out in between dates
+      description: Returns an array of Students going out in between dates. This API is consumed by the Security Component. It requires Security JWT
       requestBody:
         description: Returns an array of Students going out in between dates
         content:
@@ -126,16 +261,48 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Permit'
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 2020bcs0066
+                    name:
+                      type: string
+                      example: Tharun Vemula
+                    phoneNumber:
+                      type: string
+                      example: '6301930763'
+                    outTime:
+                      type: string
+                      example: '2023-02-11T18:30:00.000Z'
+                    inTime:
+                      type: string
+                      example: '2023-02-11T18:30:00.000Z'
+                    inVerified:
+                      type: boolean
+                      example: false
+                    outVerified:
+                      type: boolean
+                      example: false
+                    purpose:
+                      type: string
+                      example: Pala
+                    inApprovedBy:
+                      type: string
+                      example: Security 1
+                    outApprovedBy:
+                      type: string
+                      example: Security 1
         '400':
           description: Invalid ID supplied
         '404':
           description: Pet not found
-
   /auth/login:
     post:
       tags:
         - User
+      security:
+        - bearerAuth: []
       summary: Authenticates an User
       description: Returns a payload containing user data
       requestBody:
@@ -147,7 +314,7 @@ paths:
               properties:
                 id:
                   type: string
-                  example: '2020bcs0066'
+                  example: 2020bcs0066
                 password:
                   type: string
                   example: '123456'
@@ -157,56 +324,96 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                    example: theUser
+                  password:
+                    type: string
+                    example: '12345'
+                  role:
+                    type: number
+                    example: 0
+                xml:
+                  name: user
   /system:
     get:
       tags:
         - System
       summary: get status of the system
-      description: Returns the status of the System
+      description: Returns the status of the System. It is open API.
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
-
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 34
+                  allow:
+                    type: boolean
+                    example: true
+                  threshold:
+                    type: number
+                    example: 3
   /admin/system:
     post:
       tags:
         - System
-      summary: sets the status of the system
-      description: Returns the status of the System -- Only Admin
+      security:
+        - bearerAuth: []
+      summary: sets the status of the system. 
+      description: Returns the status of the System. Only the admin can consume the API. It requires Admin JWT
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/System'
-
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 34
+                  allow:
+                    type: boolean
+                    example: true
+                  threshold:
+                    type: number
+                    example: 3
   /populate/profile:
     get:
       tags:
         - User
+      security:
+        - bearerAuth: []
       summary: get the student details
-      description: Returns the students data. Used for refreshing
+      description: Returns the students data. Used for refreshing. This API is consumed by the Student Component. It requires Student JWT.
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-
+                type : array
+                items:
+                  $ref: '#/components/schemas/Permit'
+                xml:
+                  name: user
   /populate/student/all:
     post:
       tags:
         - User
+      security:
+        - bearerAuth: []
       summary: get all students under the warden
-      description: fetches students under the warden
+      description: fetches students under the warden. This API is consumed by Warden Component. It requires Warden JWT.
       requestBody:
         description: Returns a payload containing user data
         content:
@@ -216,24 +423,31 @@ paths:
               properties:
                 hostel:
                   type: string
-                  example: 'h1'
+                  example: h1
       responses:
         default:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type : array
+                items:
+                  $ref: '#/components/schemas/Student'
             application/xml:
               schema:
-                $ref: '#/components/schemas/User'
-
+                type : array
+                items:
+                  $ref: '#/components/schemas/Student'
+                xml:
+                  name: user
   /populate/student/status:
     post:
       tags:
         - User
+      security:
+        - bearerAuth: []
       summary: Sets status for a student
-      description: Warden can set status to a student
+      description: Warden can set status to a student. This API is consumed by Warden Component. It requires Warden JWT.
       requestBody:
         description: Returns a payload containing user data
         content:
@@ -243,7 +457,7 @@ paths:
               properties:
                 id:
                   type: string
-                  example: '2020bcs0066'
+                  example: 2020bcs0066
                 status:
                   type: boolean
                   example: true
@@ -253,19 +467,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Student'
         default:
           description: successful operation
-
   /populate/student/history:
     post:
       tags:
         - User
+      security:
+        - bearerAuth: []
       summary: gets history of a student
-      description: Warden can view history of a student
+      description: Warden can view history of a student. This API is consumed by Warden Component. It requires Warden JWT.
       requestBody:
         description: Returns a payload containing user data
         content:
@@ -275,31 +487,57 @@ paths:
               properties:
                 id:
                   type: string
-                  example: '2020bcs0066'
+                  example: 2020bcs0066
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Student'
         default:
           description: successful operation
-
+  /populate/location:
+    get:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: gets current location of a student 
+      description: gets current location of a student . In - 0 / Out - 1. It requires Student JWT.
+      responses:
+        '200':
+          description: Returns an object with only key, status set to either 0 or 1
+          content:
+            application/json:
+              schema:
+                type : object
+                properties:
+                  status:
+                    type: number
+                    example : 0
+        default:
+          description: successful operation
 components:
   schemas:
     Permit:
       type: object
+      required:
+        - id
+        - name
+        - phoneNumber
+        - outTime
+        - inTime
+        - inVerified
+        - outVerified
+        - purpose
       properties:
         id:
           type: string
-          example: '2020bcs0066'
+          example: 2020bcs0066
         name:
           type: string
-          example: 'Tharun Vemula'
+          example: Tharun Vemula
         phoneNumber:
           type: string
           example: '6301930763'
@@ -317,16 +555,20 @@ components:
           example: false
         purpose:
           type: string
-          example: 'Pala'
+          example: Pala
         inApprovedBy:
           type: string
-          example: 'Security 1'
+          example: Security 1
         outApprovedBy:
           type: string
-          example: 'Security 1'
-
+          example: Security 1
     User:
       type: object
+      required:
+        - id
+        - name
+        - password
+        - role
       properties:
         id:
           type: string
@@ -341,11 +583,16 @@ components:
           example: 0
       xml:
         name: user
-
     Student:
       allOf:
         - ref: '#/components/schema/User'
         - type: object
+          required:
+            - status
+            - score
+            - hostel
+            - gender
+            - currentStatus
           properties:
             status:
               type: boolean
@@ -355,10 +602,10 @@ components:
               example: 0
             hostel:
               type: string
-              example: 'h2'
+              example: h2
             gender:
               type: string
-              example: 'male'
+              example: male
             currentStatus:
               type: number
               example: 0
@@ -370,10 +617,12 @@ components:
       allOf:
         - ref: '#/components/schema/User'
         - type: object
+          required:
+            - hostel
           properties:
             hostel:
               type: string
-              example: 'h1'
+              example: h1
     System:
       type: object
       properties:
