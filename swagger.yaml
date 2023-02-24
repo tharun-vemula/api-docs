@@ -124,7 +124,7 @@ paths:
               properties:
                 id:
                   type: string
-                  example: 2020bcs0066
+                  example: <ObjectID>
                 type:
                   type: number
                   example: 0
@@ -368,7 +368,7 @@ paths:
         - System
       security:
         - bearerAuth: []
-      summary: sets the status of the system. 
+      summary: sets the status of the system.
       description: Returns the status of the System. Only the admin can consume the API. It requires Admin JWT
       responses:
         '200':
@@ -401,7 +401,7 @@ paths:
           content:
             application/json:
               schema:
-                type : array
+                type: array
                 items:
                   $ref: '#/components/schemas/Permit'
                 xml:
@@ -420,11 +420,11 @@ paths:
           content:
             application/json:
               schema:
-                type : object
+                type: object
                 properties:
                   status:
                     type: boolean
-                    example : true
+                    example: true
                 xml:
                   name: user
   /populate/student/all:
@@ -435,6 +435,12 @@ paths:
         - bearerAuth: []
       summary: get all students under the warden
       description: fetches students under the warden. This API is consumed by Warden Component. It requires Warden JWT.
+      parameters:
+        - in: path
+          name: hostel
+          schema:
+            type: string
+          required: true
       requestBody:
         description: Returns a payload containing user data
         content:
@@ -451,12 +457,12 @@ paths:
           content:
             application/json:
               schema:
-                type : array
+                type: array
                 items:
                   $ref: '#/components/schemas/Student'
             application/xml:
               schema:
-                type : array
+                type: array
                 items:
                   $ref: '#/components/schemas/Student'
                 xml:
@@ -524,7 +530,7 @@ paths:
         - User
       security:
         - bearerAuth: []
-      summary: gets current location of a student 
+      summary: gets current location of a student
       description: gets current location of a student . In - 0 / Out - 1. It requires Student JWT.
       responses:
         '200':
@@ -532,11 +538,11 @@ paths:
           content:
             application/json:
               schema:
-                type : object
+                type: object
                 properties:
                   status:
                     type: number
-                    example : 0
+                    example: 0
         default:
           description: successful operation
 components:
@@ -549,8 +555,8 @@ components:
         - phoneNumber
         - outTime
         - inTime
-        - inVerified
-        - outVerified
+        - isInVerified
+        - isOutVerified
         - purpose
       properties:
         id:
@@ -568,10 +574,10 @@ components:
         inTime:
           type: string
           example: '2023-02-11T18:30:00.000Z'
-        inVerified:
+        isInVerified:
           type: boolean
           example: false
-        outVerified:
+        isOutVerified:
           type: boolean
           example: false
         purpose:
@@ -610,15 +616,15 @@ components:
         - type: object
           required:
             - status
-            - score
+            - remarkScore
             - hostel
             - gender
-            - currentStatus
+            - inCampus
           properties:
             status:
               type: boolean
               example: true
-            score:
+            remarkScore:
               type: number
               example: 0
             hostel:
@@ -627,7 +633,7 @@ components:
             gender:
               type: string
               example: male
-            currentStatus:
+            inCampus:
               type: number
               example: 0
     Security:
