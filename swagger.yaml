@@ -497,6 +497,65 @@ paths:
                 $ref: '#/components/schemas/Student'
         default:
           description: successful operation
+  /populate/hostel/outgoing:
+    post:
+      tags:
+        - Permit
+      security:
+        - bearerAuth: []
+      summary: gets outgoing students of a hostel
+      description: Warden can view the outgoing students. This API is consumed by Warden Component. It requires Warden JWT.
+      requestBody:
+        description: Returns an array of Students going out in between dates
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: string
+                  example: '2011-10-05T14:48:00.000Z'
+                to:
+                  type: string
+                  example: '2011-10-05T14:48:00.000Z'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permit'
+        default:
+          description: successful operation
+
+  /populate/hostel/verifyPass:
+    post:
+      tags:
+        - Permit
+      security:
+        - bearerAuth: []
+      summary: verifies forwarded outpasses
+      description: Warden can view the outgoing students. This API is consumed by Warden Component. It requires Warden JWT.
+      requestBody:
+        description: Returns an updated outpass
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 'ddefr5cefrgte66'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permit'
+        default:
+          description: successful operation
+
   /populate/student/history:
     post:
       tags:
