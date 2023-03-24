@@ -75,38 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: 2020bcs0066
-                  name:
-                    type: string
-                    example: Tharun Vemula
-                  phoneNumber:
-                    type: string
-                    example: '6301930763'
-                  outTime:
-                    type: string
-                    example: '2023-02-11T18:30:00.000Z'
-                  inTime:
-                    type: string
-                    example: '2023-02-11T18:30:00.000Z'
-                  inVerified:
-                    type: boolean
-                    example: false
-                  outVerified:
-                    type: boolean
-                    example: false
-                  purpose:
-                    type: string
-                    example: Pala
-                  inApprovedBy:
-                    type: string
-                    example: Security 1
-                  outApprovedBy:
-                    type: string
-                    example: Security 1
+                $ref : '#/components/schemas/Permit'
   /populate/verify:
     post:
       tags:
@@ -140,38 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: 2020bcs0066
-                  name:
-                    type: string
-                    example: Tharun Vemula
-                  phoneNumber:
-                    type: string
-                    example: '6301930763'
-                  outTime:
-                    type: string
-                    example: '2023-02-11T18:30:00.000Z'
-                  inTime:
-                    type: string
-                    example: '2023-02-11T18:30:00.000Z'
-                  inVerified:
-                    type: boolean
-                    example: false
-                  outVerified:
-                    type: boolean
-                    example: false
-                  purpose:
-                    type: string
-                    example: Pala
-                  inApprovedBy:
-                    type: string
-                    example: Security 1
-                  outApprovedBy:
-                    type: string
-                    example: Security 1
+                $ref : '#/components/schemas/Permit'
         '400':
           description: Invalid status value
   /populate/remark:
@@ -198,38 +136,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: 2020bcs0066
-                  name:
-                    type: string
-                    example: Tharun Vemula
-                  phoneNumber:
-                    type: string
-                    example: '6301930763'
-                  outTime:
-                    type: string
-                    example: '2023-02-11T18:30:00.000Z'
-                  inTime:
-                    type: string
-                    example: '2023-02-11T18:30:00.000Z'
-                  inVerified:
-                    type: boolean
-                    example: false
-                  outVerified:
-                    type: boolean
-                    example: false
-                  purpose:
-                    type: string
-                    example: Pala
-                  inApprovedBy:
-                    type: string
-                    example: Security 1
-                  outApprovedBy:
-                    type: string
-                    example: Security 1
+                $ref : '#/components/schemas/Student'
         '400':
           description: Invalid tag value
   /populate/outgoing:
@@ -247,56 +154,23 @@ paths:
             schema:
               type: object
               properties:
-                from:
+                date:
                   type: string
                   example: '2011-10-05T14:48:00.000Z'
-                to:
+                hostel:
                   type: string
-                  example: '2011-10-05T14:48:00.000Z'
+                  example: 'h2'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: 2020bcs0066
-                    name:
-                      type: string
-                      example: Tharun Vemula
-                    phoneNumber:
-                      type: string
-                      example: '6301930763'
-                    outTime:
-                      type: string
-                      example: '2023-02-11T18:30:00.000Z'
-                    inTime:
-                      type: string
-                      example: '2023-02-11T18:30:00.000Z'
-                    inVerified:
-                      type: boolean
-                      example: false
-                    outVerified:
-                      type: boolean
-                      example: false
-                    purpose:
-                      type: string
-                      example: Pala
-                    inApprovedBy:
-                      type: string
-                      example: Security 1
-                    outApprovedBy:
-                      type: string
-                      example: Security 1
+                $ref : '#/components/schemas/Permit'
         '400':
           description: Invalid ID supplied
         '404':
-          description: Pet not found
+          description: Permit not found
   /auth/login:
     post:
       tags:
@@ -497,65 +371,6 @@ paths:
                 $ref: '#/components/schemas/Student'
         default:
           description: successful operation
-  /populate/hostel/outgoing:
-    post:
-      tags:
-        - Permit
-      security:
-        - bearerAuth: []
-      summary: gets outgoing students of a hostel
-      description: Warden can view the outgoing students. This API is consumed by Warden Component. It requires Warden JWT.
-      requestBody:
-        description: Returns an array of Students going out in between dates
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                from:
-                  type: string
-                  example: '2011-10-05T14:48:00.000Z'
-                to:
-                  type: string
-                  example: '2011-10-05T14:48:00.000Z'
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Permit'
-        default:
-          description: successful operation
-
-  /populate/hostel/verifyPass:
-    post:
-      tags:
-        - Permit
-      security:
-        - bearerAuth: []
-      summary: verifies forwarded outpasses
-      description: Warden can view the outgoing students. This API is consumed by Warden Component. It requires Warden JWT.
-      requestBody:
-        description: Returns an updated outpass
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: 'ddefr5cefrgte66'
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Permit'
-        default:
-          description: successful operation
-
   /populate/student/history:
     post:
       tags:
@@ -628,6 +443,12 @@ components:
           type: string
           example: '6301930763'
         outTime:
+          type: string
+          example: '2023-02-11T18:30:00.000Z'
+        verifiedOutTime:
+          type: string
+          example: '2023-02-11T18:30:00.000Z'
+        verifiedInTime:
           type: string
           example: '2023-02-11T18:30:00.000Z'
         inTime:
