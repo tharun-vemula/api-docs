@@ -54,28 +54,16 @@ paths:
                 inTime:
                   type: string
                   example: '2023-02-11T18:30:00.000Z'
-                inVerified:
-                  type: boolean
-                  example: false
-                outVerified:
-                  type: boolean
-                  example: false
                 purpose:
-                  type: string
-                  example: Pala
-                inApprovedBy:
-                  type: string
-                  example: Security 1
-                outApprovedBy:
-                  type: string
-                  example: Security 1
+                  type: number
+                  example: 0
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref : '#/components/schemas/Permit'
+                $ref: '#/components/schemas/Permit'
   /populate/verify:
     post:
       tags:
@@ -97,19 +85,13 @@ paths:
                 type:
                   type: number
                   example: 0
-                inApprovedBy:
-                  type: string
-                  example: Security 1
-                outApprovedBy:
-                  type: string
-                  example: Security 1
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref : '#/components/schemas/Permit'
+                $ref: '#/components/schemas/Permit'
         '400':
           description: Invalid status value
   /populate/remark:
@@ -136,7 +118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref : '#/components/schemas/Student'
+                $ref: '#/components/schemas/Student'
         '400':
           description: Invalid tag value
   /populate/outgoing:
@@ -166,7 +148,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref : '#/components/schemas/Permit'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permit'
         '400':
           description: Invalid ID supplied
         '404':
@@ -267,7 +251,7 @@ paths:
         - User
       security:
         - bearerAuth: []
-      summary: get the student details
+      summary: get the student details ie previous outpass data
       description: Returns the students data. Used for refreshing. This API is consumed by the Student Component. It requires Student JWT.
       responses:
         '200':
@@ -287,7 +271,7 @@ paths:
       security:
         - bearerAuth: []
       summary: get the student status - Internal API
-      description: Internal API to check the status of student. Returns the students data.This API is consumed by the Student Component. It requires Student JWT.
+      description: Internal API to check the status of student. Returns a boolean that indicates if the student can request auto generated outpass.This API is consumed by the Student Component. It requires Student JWT.
       responses:
         '200':
           description: successful operation
@@ -302,7 +286,7 @@ paths:
                 xml:
                   name: user
   /populate/student/all:
-    post:
+    get:
       tags:
         - User
       security:
@@ -315,16 +299,6 @@ paths:
           schema:
             type: string
           required: true
-      requestBody:
-        description: Returns a payload containing user data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                hostel:
-                  type: string
-                  example: h1
       responses:
         default:
           description: successful operation
@@ -415,10 +389,134 @@ paths:
                 type: object
                 properties:
                   status:
-                    type: number
-                    example: 0
+                    type: boolean
+                    example: true
         default:
           description: successful operation
+  /populate/hostel/outgoing:
+    post:
+      tags:
+        - Permit
+      security:
+        - bearerAuth: []
+      summary: Fectches Students from - to date
+      description: Returns an array of Students going out in between dates. This API is consumed by the Warden Component. It requires Warden JWT
+      requestBody:
+        description: Returns an array of Students going out in between dates
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  example: '2011-10-05T14:48:00.000Z'
+                hostel:
+                  type: string
+                  example: 'h2'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permit'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Permit not found
+
+  /populate/hostel/approve:
+    post:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: Verifies Pending Verification Outpasses
+      description: Approves/Rejects outpasses that are not auto approved
+      requestBody:
+        description: verifies a new pass
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: <ObjectID>
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permit'
+        '400':
+          description: Invalid status value
+  /populate/hostel/blocked:
+    post:
+      tags:
+        - Permit
+      security:
+        - bearerAuth: []
+      summary: Fectches blacklisted students
+      description: Returns an array of blacklisted Students of that hostel It requires Warden JWT
+      requestBody:
+        description: Returns an array of Students going out in between dates
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hostel:
+                  type: string
+                  example: 'h2'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Permit not found
+  /populate/hostel/pending:
+    post:
+      tags:
+        - Permit
+      security:
+        - bearerAuth: []
+      summary: Fectches pending outpasses
+      description: Returns an array of outpasses whose approval is pending.It requires Warden JWT
+      requestBody:
+        description: Returns an array of outpasses
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hostel:
+                  type: string
+                  example: 'h2'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permit'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Permit not found
 components:
   schemas:
     Permit:
@@ -461,8 +559,8 @@ components:
           type: boolean
           example: false
         purpose:
-          type: string
-          example: Pala
+          type: number
+          example: 0
         inApprovedBy:
           type: string
           example: Security 1
