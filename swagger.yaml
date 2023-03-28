@@ -286,19 +286,21 @@ paths:
                 xml:
                   name: user
   /populate/student/all:
-    get:
+    post:
       tags:
         - User
       security:
         - bearerAuth: []
       summary: get all students under the warden
       description: fetches students under the warden. This API is consumed by Warden Component. It requires Warden JWT.
-      parameters:
-        - in: path
-          name: hostel
-          schema:
-            type: string
-          required: true
+      requestBody:
+        description: Returns a payload containing student under the warden
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
       responses:
         default:
           description: successful operation
