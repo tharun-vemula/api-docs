@@ -14,15 +14,16 @@ tags:
     description: Everything about User
   - name: System
     description: Everything about System
+
 paths:
-  /populate/create:
+  /populate/outpass/create:
     post:
       tags:
         - Permit
       security:
         - bearerAuth: []
       summary: Creates a new outpass
-      description: This API  creates a new outpass. This API is consumed by the student component. It requires Student JWT.
+      description: This API  creates a new outpass. This API is consumed by the student component. It requires Student JWT. 
       requestBody:
         description: creates a new pass
         content:
@@ -64,14 +65,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Permit'
-  /populate/verify:
-    post:
+
+  /populate/outpass/verify:
+    put:
       tags:
         - Permit
       security:
         - bearerAuth: []
       summary: Verifies Outpass at the Security
-      description: In Verification and Out Verification API. This API is consumed by the Security Component. It requries Security JWT
+      description: InVerification and OutVerification API. This API is consumed by the Security Component. It requries Security JWT.
       requestBody:
         description: verifies a new pass
         content:
@@ -94,13 +96,14 @@ paths:
                 $ref: '#/components/schemas/Permit'
         '400':
           description: Invalid status value
-  /populate/remark:
-    post:
+
+  /populate/student/remark:
+    put:
       tags:
-        - Permit
+        - User
       security:
         - bearerAuth: []
-      summary: Sets remark
+      summary: Increments remark of a user
       description: Increments Remarks score by 1.
       requestBody:
         description: Increments Remarks score by 1 of a student.
@@ -121,27 +124,30 @@ paths:
                 $ref: '#/components/schemas/Student'
         '400':
           description: Invalid tag value
-  /populate/outgoing:
-    post:
+
+  /populate/student/outgoing:
+    get:
       tags:
         - Permit
       security:
         - bearerAuth: []
-      summary: Fectches Students from - to date
-      description: Returns an array of Students going out in between dates. This API is consumed by the Security Component. It requires Security JWT
-      requestBody:
-        description: Returns an array of Students going out in between dates
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                  example: '2011-10-05T14:48:00.000Z'
-                hostel:
-                  type: string
-                  example: 'h2'
+      parameters:
+        - in: path
+          name: date
+          schema:
+            type: string
+          required: true
+          description: date on which outpasses should be fetched
+        - in: path
+          name: hostel
+          schema:
+            type: string
+          required: true
+          description: date on which outpasses should be fetched 
+
+
+      summary: Fectches all outpasses between from - to date and also of a particular hostel.
+      description: Returns an array of Students going out in between dates. This API is consumed by the Security Component or Warden Component. It requires Security JWT | Warden JWT
       responses:
         '200':
           description: successful operation
@@ -155,10 +161,11 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Permit not found
+
   /auth/login:
     post:
       tags:
-        - User
+        - Auth
       security:
         - bearerAuth: []
       summary: Authenticates an User
@@ -202,31 +209,22 @@ paths:
       tags:
         - System
       summary: get status of the system
-      description: Returns the status of the System. It is open API.
+      description: Returns the status of the System. It is an open API.
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 34
-                  allow:
-                    type: boolean
-                    example: true
-                  threshold:
-                    type: number
-                    example: 3
+                $ref: '#/components/schemas/System'
+
   /admin/system:
-    post:
+    put:
       tags:
         - System
       security:
         - bearerAuth: []
-      summary: sets the status of the system.
+      summary: sets the status of the system. Admin can alter the properties of the system
       description: Returns the status of the System. Only the admin can consume the API. It requires Admin JWT
       responses:
         '200':
@@ -234,25 +232,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: number
-                    example: 34
-                  allow:
-                    type: boolean
-                    example: true
-                  threshold:
-                    type: number
-                    example: 3
-  /populate/profile:
+                $ref: '#/components/schemas/System'
+
+  /populate/student/profile:
     get:
       tags:
         - User
       security:
         - bearerAuth: []
-      summary: get the student details ie previous outpass data
-      description: Returns the students data. Used for refreshing. This API is consumed by the Student Component. It requires Student JWT.
+      summary: fetches previous outpass data of a user
+      description: Returns the user data. Used for refreshing. This API is consumed by the Student Component. It requires Student JWT.
       responses:
         '200':
           description: successful operation
@@ -263,8 +252,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Permit'
                 xml:
-                  name: user
-  /populate/allow:
+                  name: permit
+
+  /populate/student/allowance:
     get:
       tags:
         - User
@@ -285,40 +275,10 @@ paths:
                     example: true
                 xml:
                   name: user
-  /populate/student/all:
-    post:
-      tags:
-        - User
-      security:
-        - bearerAuth: []
-      summary: get all students under the warden
-      description: fetches students under the warden. This API is consumed by Warden Component. It requires Warden JWT.
-      requestBody:
-        description: Returns a payload containing student under the warden
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-      responses:
-        default:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Student'
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Student'
-                xml:
-                  name: user
+
+
   /populate/student/status:
-    post:
+    put:
       tags:
         - User
       security:
@@ -347,24 +307,22 @@ paths:
                 $ref: '#/components/schemas/Student'
         default:
           description: successful operation
+
   /populate/student/history:
-    post:
+    get:
       tags:
         - User
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: id of the student to be fetched
       summary: gets history of a student
       description: Warden can view history of a student. This API is consumed by Warden Component. It requires Warden JWT.
-      requestBody:
-        description: Returns a payload containing user data
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: 2020bcs0066
       responses:
         '200':
           description: Successful operation
@@ -374,7 +332,8 @@ paths:
                 $ref: '#/components/schemas/Student'
         default:
           description: successful operation
-  /populate/location:
+
+  /populate/student/location:
     get:
       tags:
         - User
@@ -395,45 +354,46 @@ paths:
                     example: true
         default:
           description: successful operation
-  /populate/hostel/outgoing:
+
+  # /populate/hostel/student/outgoing:
+  #   post:
+  #     tags:
+  #       - Permit
+  #     security:
+  #       - bearerAuth: []
+  #     summary: Fectches Students from - to date of a particular hostel under warden.
+  #     description: Returns an array of Students going out in between dates. This API is consumed by the Warden Component. It requires Warden JWT
+  #     requestBody:
+  #       description: Returns an array of Students going out in between dates
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               date:
+  #                 type: string
+  #                 example: '2011-10-05T14:48:00.000Z'
+  #               hostel:
+  #                 type: string
+  #                 example: 'h2'
+  #     responses:
+  #       '200':
+  #         description: successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: '#/components/schemas/Permit'
+  #       '400':
+  #         description: Invalid ID supplied
+  #       '404':
+  #         description: Permit not found
+
+  /populate/hostel/outpass/approve:
     post:
       tags:
         - Permit
-      security:
-        - bearerAuth: []
-      summary: Fectches Students from - to date
-      description: Returns an array of Students going out in between dates. This API is consumed by the Warden Component. It requires Warden JWT
-      requestBody:
-        description: Returns an array of Students going out in between dates
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                  example: '2011-10-05T14:48:00.000Z'
-                hostel:
-                  type: string
-                  example: 'h2'
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Permit'
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Permit not found
-
-  /populate/hostel/approve:
-    post:
-      tags:
-        - User
       security:
         - bearerAuth: []
       summary: Verifies Pending Verification Outpasses
@@ -457,24 +417,28 @@ paths:
                 $ref: '#/components/schemas/Permit'
         '400':
           description: Invalid status value
-  /populate/hostel/blocked:
-    post:
+
+  /populate/hostel/student:
+    get:
       tags:
-        - Permit
+        - User
       security:
         - bearerAuth: []
-      summary: Fectches blacklisted students
-      description: Returns an array of blacklisted Students of that hostel It requires Warden JWT
-      requestBody:
-        description: Returns an array of Students going out in between dates
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                hostel:
-                  type: string
-                  example: 'h2'
+      parameters:
+        - in: path
+          name: q
+          schema:
+            type: string
+          required: true
+          description: what query it is q = blocked || all
+        - in: path
+          name: hostel
+          schema:
+            type: string
+          required: true
+          description: date on which outpasses should be fetched 
+      summary: Fectches blacklisted or all students based on query
+      description: Returns an array of blacklisted or all Students of that hostel It requires Warden JWT
       responses:
         '200':
           description: successful operation
@@ -488,24 +452,22 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Permit not found
-  /populate/hostel/pending:
-    post:
+
+  /populate/hostel/outpass/pending:
+    get:
       tags:
         - Permit
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: hostel
+          schema:
+            type: string
+          required: true
+          description: date on which outpasses should be fetched 
       summary: Fectches pending outpasses
       description: Returns an array of outpasses whose approval is pending.It requires Warden JWT
-      requestBody:
-        description: Returns an array of outpasses
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                hostel:
-                  type: string
-                  example: 'h2'
       responses:
         '200':
           description: successful operation
@@ -519,6 +481,53 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Permit not found
+  /populate/outpass/delete:
+    delete:
+      tags:
+        - Permit
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: id of the outpass to be ddeleted
+      summary: deletes the selected outpass
+      description: Returns an acknowledgment of the deleted outpass
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Permit not found
+
+  /populate/fp/scan:
+    post:
+      tags:
+        - Fingerprint
+      summary: API Call made by Fingerprint module
+      description: API Call made by Fingerprint module
+      requestBody:
+        description: verifies a new pass
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: '2020bcs0066'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permit'
+        '400':
+          description: Invalid status value
+
 components:
   schemas:
     Permit:
@@ -532,6 +541,7 @@ components:
         - isInVerified
         - isOutVerified
         - purpose
+        - hostel
       properties:
         id:
           type: string
@@ -569,6 +579,9 @@ components:
         outApprovedBy:
           type: string
           example: Security 1
+        hostel:
+          type : string 
+          example : h2
     User:
       type: object
       required:
@@ -590,6 +603,7 @@ components:
           example: 0
       xml:
         name: user
+
     Student:
       allOf:
         - ref: '#/components/schema/User'
@@ -620,6 +634,12 @@ components:
       allOf:
         - ref: '#/components/schema/User'
         - type: object
+
+    Admin:
+      allOf:
+        - ref: '#/components/schema/User'
+        - type: object
+
     Warden:
       allOf:
         - ref: '#/components/schema/User'
@@ -636,9 +656,24 @@ components:
         id:
           type: number
           example: 34
-        allow:
+        allowOutpass:
           type: boolean
           example: true
         threshold:
           type: number
           example: 3
+        allowLeaves:
+          type: boolean
+          example : false
+        outpassIssuanceStartTimeInHours: 
+          type: number
+          example : 7
+        outpassIssuanceEndTimeInHours:
+          type: number
+          example : 19
+        cutOffTImeInHours:
+          type: number
+          example : 21
+        lastUpdated :
+          type: string
+          example: '2023-02-11T18:30:00.000Z'
