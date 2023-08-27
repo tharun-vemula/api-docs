@@ -125,7 +125,7 @@ paths:
         '400':
           description: Invalid tag value
 
-  /populate/student/outgoing:
+  /populate/outpass/outgoing:
     get:
       tags:
         - Permit
