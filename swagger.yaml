@@ -80,6 +80,11 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - id
+                - type
+                - outTime
+                - inTime
               properties:
                 id:
                   type: string
@@ -87,6 +92,21 @@ paths:
                 type:
                   type: number
                   example: 0
+                outTime:
+                  type: string
+                  example: 2023-02-11T18:30:00.000Z
+                inTime:
+                  type: string 
+                  example: 2023-02-11T18:30:00.000Z
+                studentId:
+                  type: string
+                  example: 2020bcs0066
+                outApprovedBy:
+                  type : string
+                  example : 222
+                inApprovedBy:
+                  type: string
+                  example : 222
       responses:
         '200':
           description: successful operation
@@ -111,6 +131,8 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - id
               properties:
                 id:
                   type: string
@@ -226,6 +248,38 @@ paths:
         - bearerAuth: []
       summary: sets the status of the system. Admin can alter the properties of the system
       description: Returns the status of the System. Only the admin can consume the API. It requires Admin JWT
+      requestBody:
+        description: Returns a payload containing user data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allowOutpass:
+                  type: boolean
+                  example: true
+                allowLeaves:
+                  type: boolean
+                  example: true
+                allowFingerprintScan:
+                  type: boolean
+                  example: true
+                threshold:
+                  type: number
+                  example: 4
+                lastUpdated:
+                  type: string
+                  example: 2023-02-11T18:30:00.000Z
+                outpassIssuanceStartTimeInHours:
+                  type: number
+                  example: 7
+                outpassIssuanceEndTimeInHours:
+                  type: number
+                  example: 19
+                cutOffTimeInHours:
+                  type: number
+                  example: 2
+
       responses:
         '200':
           description: successful operation
@@ -333,14 +387,14 @@ paths:
         default:
           description: successful operation
 
-  /populate/student/location:
+  /populate/student/outpass/status:
     get:
       tags:
         - User
       security:
         - bearerAuth: []
-      summary: gets current location of a student
-      description: gets current location of a student . In - 0 / Out - 1. It requires Student JWT.
+      summary: gets a status value if there exists an active outpass of a student
+      description: Active - true, Inactive - false.
       responses:
         '200':
           description: Returns an object with only key, status set to either 0 or 1
@@ -355,55 +409,22 @@ paths:
         default:
           description: successful operation
 
-  # /populate/hostel/student/outgoing:
-  #   post:
-  #     tags:
-  #       - Permit
-  #     security:
-  #       - bearerAuth: []
-  #     summary: Fectches Students from - to date of a particular hostel under warden.
-  #     description: Returns an array of Students going out in between dates. This API is consumed by the Warden Component. It requires Warden JWT
-  #     requestBody:
-  #       description: Returns an array of Students going out in between dates
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #             properties:
-  #               date:
-  #                 type: string
-  #                 example: '2011-10-05T14:48:00.000Z'
-  #               hostel:
-  #                 type: string
-  #                 example: 'h2'
-  #     responses:
-  #       '200':
-  #         description: successful operation
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 $ref: '#/components/schemas/Permit'
-  #       '400':
-  #         description: Invalid ID supplied
-  #       '404':
-  #         description: Permit not found
-
   /populate/hostel/outpass/approve:
     post:
       tags:
         - Permit
       security:
         - bearerAuth: []
-      summary: Verifies Pending Verification Outpasses
-      description: Approves/Rejects outpasses that are not auto approved
+      summary: Verifies Pending Verification Outpasses.
+      description: Approves outpasses that are not auto approved. It is used by warden and it requires Warden JWT
       requestBody:
         description: verifies a new pass
         content:
           application/json:
             schema:
               type: object
+              required:
+                - id
               properties:
                 id:
                   type: string
@@ -493,7 +514,7 @@ paths:
           schema:
             type: string
           required: true
-          description: id of the outpass to be ddeleted
+          description: id of the outpass to be deleted
       summary: deletes the selected outpass
       description: Returns an acknowledgment of the deleted outpass
       responses:
@@ -538,8 +559,6 @@ components:
         - phoneNumber
         - outTime
         - inTime
-        - isInVerified
-        - isOutVerified
         - purpose
         - hostel
       properties:
@@ -582,6 +601,12 @@ components:
         hostel:
           type : string 
           example : h2
+        autoVerified:
+          type: boolean
+          example : true
+        photoUrl:
+          type: string
+          example: 'http://localhost/api/v1/photo.jpg'
     User:
       type: object
       required:
@@ -648,9 +673,10 @@ components:
             - hostel
           properties:
             hostel:
-              type: string
-              example: h1
-    System:
+              type: array
+              items:
+                example: h1
+    System: 
       type: object
       properties:
         id:
